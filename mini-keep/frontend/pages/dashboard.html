@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mini Keep</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <span><i class="fas fa-lightbulb"></i></span> Mini Keep
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search notes...">
+        </div>
+        <div class="user-menu">
+            <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Add Note Form -->
+        <div class="add-note-container">
+            <form id="add-note-form" class="add-note-form">
+                <input type="text" id="note-title" placeholder="Title">
+                <textarea id="note-desc" rows="3" placeholder="Take a note..."></textarea>
+
+                <div class="form-actions">
+                    <div class="color-picker" id="color-picker">
+                        <div class="color-option" data-color="#ffffff" style="background-color: #ffffff;"></div>
+                        <div class="color-option" data-color="#f28b82" style="background-color: #f28b82;"></div>
+                        <!-- Red -->
+                        <div class="color-option" data-color="#fbbc04" style="background-color: #fbbc04;"></div>
+                        <!-- Orange -->
+                        <div class="color-option" data-color="#fff475" style="background-color: #fff475;"></div>
+                        <!-- Yellow -->
+                        <div class="color-option" data-color="#ccff90" style="background-color: #ccff90;"></div>
+                        <!-- Green -->
+                        <div class="color-option" data-color="#a7ffeb" style="background-color: #a7ffeb;"></div>
+                        <!-- Teal -->
+                        <div class="color-option" data-color="#cbf0f8" style="background-color: #cbf0f8;"></div>
+                        <!-- Blue -->
+                        <div class="color-option" data-color="#aecbfa" style="background-color: #aecbfa;"></div>
+                        <!-- Dark Blue -->
+                        <div class="color-option" data-color="#d7aefb" style="background-color: #d7aefb;"></div>
+                        <!-- Purple -->
+                        <div class="color-option" data-color="#fdcfe8" style="background-color: #fdcfe8;"></div>
+                        <!-- Pink -->
+                    </div>
+                    <button type="submit" class="btn btn-small">Add</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Notes Grid -->
+        <div id="notes-grid" class="notes-grid">
+            <!-- Notes will be injected here -->
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Note</h2>
+            <form id="edit-note-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <input type="text" id="edit-title" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <textarea id="edit-desc" rows="5" placeholder="Description"></textarea>
+                </div>
+                <!-- Simple color picker for edit too if wanted, skipping for simplicity in modal -->
+                <button type="submit" class="btn">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Helper script to check auth before loading app.js -->
+    <script>
+        if (!localStorage.getItem('user')) {
+            window.location.href = '../index.html';
+        }
+    </script>
+    <script src="../js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,333 @@
+:root {
+  --primary-color: #fbbc04; /* Google Keep Yellow-ish */
+  --bg-color: #ffffff;
+  --text-color: #202124;
+  --gray-200: #f1f3f4;
+  --gray-300: #e0e0e0;
+  --shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  --border-radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Google-like font */
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Auth Pages */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.auth-card {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.auth-card h2 {
+  margin-bottom: 1.5rem;
+  color: #5f6368;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #5f6368;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--primary-color);
+  color: #202124;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #f9ab00;
+}
+
+.auth-link {
+  margin-top: 1rem;
+  display: block;
+  color: #1a73e8;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* Dashboard */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  border-bottom: 1px solid var(--gray-300);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #5f6368;
+}
+
+.brand span {
+  color: var(--primary-color);
+  margin-right: 5px;
+}
+
+.search-bar input {
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: var(--gray-200);
+  width: 400px;
+  max-width: 100%;
+  transition: all 0.2s;
+}
+
+.search-bar input:focus {
+  background: white;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+  outline: none;
+}
+
+.user-menu button {
+  background: transparent;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  color: #5f6368;
+}
+
+.main-content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Add Note Form */
+.add-note-container {
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  background: white;
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  position: relative;
+}
+
+.add-note-form input,
+.add-note-form textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  resize: none; /* Auto-expand would be nice but requires JS */
+}
+
+.add-note-form input {
+  font-weight: bold;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.color-picker {
+  display: flex;
+  gap: 5px;
+}
+
+.color-option {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #ddd;
+}
+
+.color-option:hover {
+  border-color: #999;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  width: auto;
+}
+
+/* Notes Grid */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.note-card {
+  background: white;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-300);
+  padding: 1rem;
+  position: relative;
+  transition: box-shadow 0.2s;
+  /* Multi-line truncation for description could be added */
+}
+
+.note-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.note-card:hover .note-actions {
+  opacity: 1;
+}
+
+.note-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.note-card p {
+  font-size: 0.95rem;
+  color: #3c4043;
+  margin-bottom: 1rem;
+  white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.note-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.note-actions {
+  display: flex;
+  gap: 10px;
+  opacity: 0; /* Show on hover */
+  transition: opacity 0.2s;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.6;
+}
+
+.action-btn:hover {
+  opacity: 1;
+}
+
+.pin-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.note-card:hover .pin-btn, .pin-btn.active {
+  opacity: 1;
+}
+
+.pin-btn.active {
+  color: var(--primary-color);
+}
+
+/* Modal */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 200; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.5); 
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; 
+  max-width: 500px;
+  border-radius: var(--border-radius);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .search-bar input {
+      width: 150px;
+  }
+  .notes-grid {
+      grid-template-columns: 1fr;
+  }
+}
