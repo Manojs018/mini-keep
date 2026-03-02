@@ -2,6 +2,7 @@ const API_URL = 'http://localhost:5000/api';
 const user = JSON.parse(localStorage.getItem('user'));
 let notes = [];
 let selectedColor = '#ffffff';
+let editSelectedColor = '#ffffff';
 
 // Auth Header
 const authHeader = {
@@ -16,18 +17,26 @@ const notesGrid = document.getElementById('notes-grid');
 const addNoteForm = document.getElementById('add-note-form');
 const logoutBtn = document.getElementById('logout-btn');
 const searchInput = document.getElementById('search-input');
-const colorOptions = document.querySelectorAll('.color-option');
+const colorOptions = document.querySelectorAll('.color-option:not(.edit-color-option)');
+const editColorOptions = document.querySelectorAll('.edit-color-option');
 
 // Color Picker Logic
 colorOptions.forEach(option => {
     option.addEventListener('click', () => {
-        // Remove selection from others
         colorOptions.forEach(opt => opt.style.border = '1px solid #ddd');
-        // Select this one
         option.style.border = '2px solid #333';
         selectedColor = option.dataset.color;
-        // Optional: change form background
         document.querySelector('.add-note-container').style.backgroundColor = selectedColor;
+    });
+});
+
+// Edit Color Picker Logic
+editColorOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        editColorOptions.forEach(opt => opt.style.border = '1px solid #ddd');
+        option.style.border = '2px solid #333';
+        editSelectedColor = option.dataset.color;
+        document.querySelector('.modal-content').style.backgroundColor = editSelectedColor;
     });
 });
 
@@ -171,6 +180,18 @@ window.openEditModal = (id) => {
         document.getElementById('edit-id').value = note._id;
         document.getElementById('edit-title').value = note.title;
         document.getElementById('edit-desc').value = note.description;
+        editSelectedColor = note.color || '#ffffff';
+
+        // Select the color in modal
+        editColorOptions.forEach(opt => {
+            if (opt.dataset.color === editSelectedColor) {
+                opt.style.border = '2px solid #333';
+            } else {
+                opt.style.border = '1px solid #ddd';
+            }
+        });
+        document.querySelector('.modal-content').style.backgroundColor = editSelectedColor;
+
         modal.style.display = 'block';
     }
 };
@@ -195,7 +216,7 @@ editForm.addEventListener('submit', async (e) => {
         const res = await fetch(`${API_URL}/notes/${id}`, {
             method: 'PUT',
             ...authHeader,
-            body: JSON.stringify({ title, description })
+            body: JSON.stringify({ title, description, color: editSelectedColor })
         });
 
         if (res.ok) {
