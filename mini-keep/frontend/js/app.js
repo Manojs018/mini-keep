@@ -47,6 +47,20 @@ async function fetchNotes() {
     }
 }
 
+// Helper to escape HTML characters
+function escapeHTML(str) {
+    if (!str) return "";
+    return str.replace(/[&<>"']/g, function (m) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[m];
+    });
+}
+
 // Render Notes
 function renderNotes(notesToRender) {
     notesGrid.innerHTML = '';
@@ -65,8 +79,8 @@ function renderNotes(notesToRender) {
         const date = new Date(note.createdAt).toLocaleDateString();
 
         noteEl.innerHTML = `
-      <div class="note-title">${note.title}</div>
-      <p>${note.description}</p>
+      <div class="note-title">${escapeHTML(note.title)}</div>
+      <p>${escapeHTML(note.description)}</p>
       <div class="note-footer">
           <span>${date}</span>
           <div class="note-actions">
