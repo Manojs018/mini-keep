@@ -23,8 +23,8 @@ const editColorOptions = document.querySelectorAll('.edit-color-option');
 // Color Picker Logic
 colorOptions.forEach(option => {
     option.addEventListener('click', () => {
-        colorOptions.forEach(opt => opt.style.border = '1px solid #ddd');
-        option.style.border = '2px solid #333';
+        colorOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
         selectedColor = option.dataset.color;
         document.querySelector('.add-note-container').style.backgroundColor = selectedColor;
     });
@@ -33,8 +33,8 @@ colorOptions.forEach(option => {
 // Edit Color Picker Logic
 editColorOptions.forEach(option => {
     option.addEventListener('click', () => {
-        editColorOptions.forEach(opt => opt.style.border = '1px solid #ddd');
-        option.style.border = '2px solid #333';
+        editColorOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
         editSelectedColor = option.dataset.color;
         document.querySelector('.modal-content').style.backgroundColor = editSelectedColor;
     });
@@ -129,7 +129,7 @@ addNoteForm.addEventListener('submit', async (e) => {
             document.getElementById('note-desc').value = '';
             selectedColor = '#ffffff';
             document.querySelector('.add-note-container').style.backgroundColor = '#ffffff';
-            colorOptions.forEach(opt => opt.style.border = '1px solid #ddd');
+            colorOptions.forEach(opt => opt.classList.remove('selected'));
 
             // Refresh notes
             fetchNotes();
@@ -185,9 +185,9 @@ window.openEditModal = (id) => {
         // Select the color in modal
         editColorOptions.forEach(opt => {
             if (opt.dataset.color === editSelectedColor) {
-                opt.style.border = '2px solid #333';
+                opt.classList.add('selected');
             } else {
-                opt.style.border = '1px solid #ddd';
+                opt.classList.remove('selected');
             }
         });
         document.querySelector('.modal-content').style.backgroundColor = editSelectedColor;
