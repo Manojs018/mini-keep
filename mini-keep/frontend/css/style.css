@@ -1,10 +1,11 @@
 :root {
-  --primary-color: #fbbc04; /* Google Keep Yellow-ish */
+  --primary-color: #fbbc04;
+  /* Google Keep Yellow-ish */
   --bg-color: #ffffff;
   --text-color: #202124;
   --gray-200: #f1f3f4;
   --gray-300: #e0e0e0;
-  --shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  --shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
   --border-radius: 8px;
 }
 
@@ -12,7 +13,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Google-like font */
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Google-like font */
 }
 
 body {
@@ -129,7 +131,7 @@ body {
 
 .search-bar input:focus {
   background: white;
-  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3);
   outline: none;
 }
 
@@ -165,7 +167,8 @@ body {
   outline: none;
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  resize: none; /* Auto-expand would be nice but requires JS */
+  resize: none;
+  /* Auto-expand would be nice but requires JS */
 }
 
 .add-note-form input {
@@ -181,25 +184,42 @@ body {
 
 .color-picker {
   display: flex;
-  gap: 5px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .color-option {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, border-color 0.2s;
+  position: relative;
 }
 
 .color-option:hover {
-  border-color: #999;
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.color-option.selected::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
 }
 
 .btn-small {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   font-size: 0.9rem;
   width: auto;
+  border-radius: 4px;
 }
 
 /* Notes Grid */
@@ -237,7 +257,8 @@ body {
   font-size: 0.95rem;
   color: #3c4043;
   margin-bottom: 1rem;
-  white-space: pre-wrap; /* Preserve line breaks */
+  white-space: pre-wrap;
+  /* Preserve line breaks */
 }
 
 .note-footer {
@@ -251,7 +272,8 @@ body {
 .note-actions {
   display: flex;
   gap: 10px;
-  opacity: 0; /* Show on hover */
+  opacity: 0;
+  /* Show on hover */
   transition: opacity 0.2s;
 }
 
@@ -277,7 +299,8 @@ body {
   opacity: 0;
 }
 
-.note-card:hover .pin-btn, .pin-btn.active {
+.note-card:hover .pin-btn,
+.pin-btn.active {
   opacity: 1;
 }
 
@@ -287,25 +310,26 @@ body {
 
 /* Modal */
 .modal {
-  display: none; 
-  position: fixed; 
-  z-index: 200; 
+  display: none;
+  position: fixed;
+  z-index: 200;
   left: 0;
   top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.5); 
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto; 
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; 
-  max-width: 500px;
+  margin: 10% auto;
+  padding: 24px;
+  border: none;
+  width: 90%;
+  max-width: 600px;
   border-radius: var(--border-radius);
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
 
 .close {
@@ -313,6 +337,22 @@ body {
   float: right;
   font-size: 28px;
   font-weight: bold;
+}
+
+#edit-note-form input,
+#edit-note-form textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  resize: none;
+  background: transparent;
+}
+
+#edit-note-form input {
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .close:hover,
@@ -325,9 +365,10 @@ body {
 /* Responsive */
 @media (max-width: 600px) {
   .search-bar input {
-      width: 150px;
+    width: 150px;
   }
+
   .notes-grid {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 }
