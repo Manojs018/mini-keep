@@ -3,6 +3,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 let notes = [];
 let selectedColor = '#ffffff';
 let editSelectedColor = '#ffffff';
+let currentView = 'notes';
 
 // Auth Header
 const authHeader = {
@@ -19,6 +20,9 @@ const logoutBtn = document.getElementById('logout-btn');
 const searchInput = document.getElementById('search-input');
 const colorOptions = document.querySelectorAll('.color-option:not(.edit-color-option)');
 const editColorOptions = document.querySelectorAll('.edit-color-option');
+const sidebarItems = document.querySelectorAll('.sidebar-item');
+const viewTitle = document.getElementById('view-title');
+const addNoteContainer = document.querySelector('.add-note-container');
 
 // Color Picker Logic
 colorOptions.forEach(option => {
@@ -40,10 +44,31 @@ editColorOptions.forEach(option => {
     });
 });
 
+// Sidebar Logic
+sidebarItems.forEach(item => {
+    item.addEventListener('click', () => {
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentView = item.dataset.view;
+
+        // Update UI based on view
+        if (currentView === 'notes') {
+            viewTitle.style.display = 'none';
+            addNoteContainer.style.display = 'block';
+        } else {
+            viewTitle.innerText = currentView.charAt(0).toUpperCase() + currentView.slice(1);
+            viewTitle.style.display = 'block';
+            addNoteContainer.style.display = 'none';
+        }
+
+        fetchNotes();
+    });
+});
+
 // Load Notes
 async function fetchNotes() {
     try {
-        const res = await fetch(`${API_URL}/notes`, authHeader);
+        const res = await fetch(`${API_URL}/notes?view=${currentView}`, authHeader);
         const data = await res.json();
         if (res.ok) {
             notes = data;
@@ -75,7 +100,11 @@ function renderNotes(notesToRender) {
     notesGrid.innerHTML = '';
 
     if (notesToRender.length === 0) {
-        notesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">No notes found. Add one!</p>';
+        let emptyMsg = "No notes found. Add one!";
+        if (currentView === 'archive') emptyMsg = "Your archived notes appear here.";
+        if (currentView === 'trash') emptyMsg = "No notes in Trash.";
+
+        notesGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #777; margin-top: 2rem;">${emptyMsg}</p>`;
         return;
     }
 
@@ -84,8 +113,26 @@ function renderNotes(notesToRender) {
         noteEl.classList.add('note-card');
         noteEl.style.backgroundColor = note.color;
 
-        // Formatting date
         const date = new Date(note.createdAt).toLocaleDateString();
+
+        let actionButtons = '';
+        if (currentView === 'trash') {
+            actionButtons = `
+                <button class="action-btn" title="Restore" onclick="trashNote('${note._id}')"><i class="fas fa-undo"></i></button>
+                <button class="action-btn" title="Delete Permanently" onclick="deleteNotePermanently('${note._id}')"><i class="fas fa-trash-alt"></i></button>
+            `;
+        } else if (currentView === 'archive') {
+            actionButtons = `
+                <button class="action-btn" title="Unarchive" onclick="archiveNote('${note._id}')"><i class="fas fa-upload"></i></button>
+                <button class="action-btn" title="Trash" onclick="trashNote('${note._id}')"><i class="fas fa-trash"></i></button>
+            `;
+        } else {
+            actionButtons = `
+                <button class="action-btn" title="Edit" onclick="openEditModal('${note._id}')"><i class="fas fa-edit"></i></button>
+                <button class="action-btn" title="Archive" onclick="archiveNote('${note._id}')"><i class="fas fa-archive"></i></button>
+                <button class="action-btn" title="Trash" onclick="trashNote('${note._id}')"><i class="fas fa-trash"></i></button>
+            `;
+        }
 
         noteEl.innerHTML = `
       <div class="note-title">${escapeHTML(note.title)}</div>
@@ -93,13 +140,13 @@ function renderNotes(notesToRender) {
       <div class="note-footer">
           <span>${date}</span>
           <div class="note-actions">
-              <button class="action-btn" onclick="openEditModal('${note._id}')"><i class="fas fa-edit"></i></button>
-              <button class="action-btn" onclick="deleteNote('${note._id}')"><i class="fas fa-trash"></i></button>
+              ${actionButtons}
           </div>
       </div>
+      ${currentView === 'notes' ? `
       <button class="pin-btn ${note.pinned ? 'active' : ''}" onclick="togglePin('${note._id}')">
           <i class="fas fa-thumbtack"></i>
-      </button>
+      </button>` : ''}
     `;
         notesGrid.appendChild(noteEl);
     });
@@ -139,9 +186,9 @@ addNoteForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Delete Note
-window.deleteNote = async (id) => {
-    if (!confirm('Are you sure?')) return;
+// Delete Note Permanently
+window.deleteNotePermanently = async (id) => {
+    if (!confirm('Delete permanently? This cannot be undone.')) return;
 
     try {
         const res = await fetch(`${API_URL}/notes/${id}`, {
@@ -154,6 +201,34 @@ window.deleteNote = async (id) => {
         console.error(error);
     }
 };
+
+// Toggle Archive
+window.archiveNote = async (id) => {
+    try {
+        const res = await fetch(`${API_URL}/notes/archive/${id}`, {
+            method: 'PUT',
+            ...authHeader
+        });
+
+        if (res.ok) fetchNotes();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Toggle Trash
+window.trashNote = async (id) => {
+    try {
+        const res = await fetch(`${API_URL}/notes/trash/${id}`, {
+            method: 'PUT',
+            ...authHeader
+        });
+
+        if (res.ok) fetchNotes();
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 // Toggle Pin
 window.togglePin = async (id) => {
