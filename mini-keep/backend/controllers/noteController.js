@@ -7,14 +7,37 @@ let localNotes = [];
 // @route   GET /api/notes
 // @access  Private
 const getNotes = async (req, res) => {
+    const { view } = req.query; // 'notes', 'archive', 'trash'
+
+    let filter = { user: req.user.id };
+    if (view === 'archive') {
+        filter.isArchived = true;
+        filter.isTrashed = false;
+    } else if (view === 'trash') {
+        filter.isTrashed = true;
+    } else {
+        // Main view: active notes
+        filter.isArchived = false;
+        filter.isTrashed = false;
+    }
+
     if (!global.dbConnected) {
-        // Filter by user and sort roughly (pinned first)
-        const notes = localNotes.filter(n => n.user === req.user.id || n.user === req.user._id)
-            .sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
+        const userId = req.user.id || req.user._id;
+        let notes = localNotes.filter(n => (n.user === userId));
+
+        if (view === 'archive') {
+            notes = notes.filter(n => n.isArchived && !n.isTrashed);
+        } else if (view === 'trash') {
+            notes = notes.filter(n => n.isTrashed);
+        } else {
+            notes = notes.filter(n => !n.isArchived && !n.isTrashed);
+        }
+
+        notes.sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
         return res.status(200).json(notes);
     }
 
-    const notes = await Note.find({ user: req.user.id }).sort({ pinned: -1, createdAt: -1 }); // Pinned first, then newest
+    const notes = await Note.find(filter).sort({ pinned: -1, createdAt: -1 });
     res.status(200).json(notes);
 };
 
@@ -35,6 +58,8 @@ const createNote = async (req, res) => {
             description,
             color: color || '#ffffff',
             pinned: pinned || false,
+            isArchived: false,
+            isTrashed: false,
             user: req.user.id || req.user._id, // Handle mock ID format
             createdAt: new Date().toISOString()
         };
@@ -154,10 +179,68 @@ const pinNote = async (req, res) => {
     res.status(200).json(note);
 }
 
+// @desc    Toggle archive status
+// @route   PUT /api/notes/archive/:id
+// @access  Private
+const archiveNote = async (req, res) => {
+    if (!global.dbConnected) {
+        const note = localNotes.find(n => n._id === req.params.id);
+        if (note) {
+            note.isArchived = !note.isArchived;
+            if (note.isArchived) note.pinned = false; // Unpin if archived
+            return res.status(200).json(note);
+        }
+        return res.status(404).json({ message: 'Note not found' });
+    }
+
+    const note = await Note.findById(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    if (note.user.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
+
+    note.isArchived = !note.isArchived;
+    if (note.isArchived) note.pinned = false;
+
+    await note.save();
+    res.status(200).json(note);
+};
+
+// @desc    Toggle trash status
+// @route   PUT /api/notes/trash/:id
+// @access  Private
+const trashNote = async (req, res) => {
+    if (!global.dbConnected) {
+        const note = localNotes.find(n => n._id === req.params.id);
+        if (note) {
+            note.isTrashed = !note.isTrashed;
+            if (note.isTrashed) {
+                note.pinned = false;
+                note.isArchived = false;
+            }
+            return res.status(200).json(note);
+        }
+        return res.status(404).json({ message: 'Note not found' });
+    }
+
+    const note = await Note.findById(req.params.id);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    if (note.user.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
+
+    note.isTrashed = !note.isTrashed;
+    if (note.isTrashed) {
+        note.pinned = false;
+        note.isArchived = false;
+    }
+
+    await note.save();
+    res.status(200).json(note);
+};
+
 module.exports = {
     getNotes,
     createNote,
     updateNote,
     deleteNote,
     pinNote,
+    archiveNote,
+    trashNote
 };
