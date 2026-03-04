@@ -23,44 +23,51 @@
         </div>
     </nav>
 
-    <div class="main-content">
-        <!-- Add Note Form -->
-        <div class="add-note-container">
-            <form id="add-note-form" class="add-note-form">
-                <input type="text" id="note-title" placeholder="Title">
-                <textarea id="note-desc" rows="3" placeholder="Take a note..."></textarea>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-item active" data-view="notes">
+                <i class="far fa-lightbulb"></i> Notes
+            </div>
+            <div class="sidebar-item" data-view="archive">
+                <i class="fas fa-archive"></i> Archive
+            </div>
+            <div class="sidebar-item" data-view="trash">
+                <i class="fas fa-trash-alt"></i> Trash
+            </div>
+        </aside>
 
-                <div class="form-actions">
-                    <div class="color-picker" id="color-picker">
-                        <div class="color-option selected" data-color="#ffffff" style="background-color: #ffffff;">
+        <div class="main-content">
+            <!-- Add Note Form -->
+            <div class="add-note-container">
+                <form id="add-note-form" class="add-note-form">
+                    <input type="text" id="note-title" placeholder="Title">
+                    <textarea id="note-desc" rows="3" placeholder="Take a note..."></textarea>
+
+                    <div class="form-actions">
+                        <div class="color-picker" id="color-picker">
+                            <div class="color-option selected" data-color="#ffffff" style="background-color: #ffffff;">
+                            </div>
+                            <div class="color-option" data-color="#f28b82" style="background-color: #f28b82;"></div>
+                            <div class="color-option" data-color="#fbbc04" style="background-color: #fbbc04;"></div>
+                            <div class="color-option" data-color="#fff475" style="background-color: #fff475;"></div>
+                            <div class="color-option" data-color="#ccff90" style="background-color: #ccff90;"></div>
+                            <div class="color-option" data-color="#a7ffeb" style="background-color: #a7ffeb;"></div>
+                            <div class="color-option" data-color="#cbf0f8" style="background-color: #cbf0f8;"></div>
+                            <div class="color-option" data-color="#aecbfa" style="background-color: #aecbfa;"></div>
+                            <div class="color-option" data-color="#d7aefb" style="background-color: #d7aefb;"></div>
+                            <div class="color-option" data-color="#fdcfe8" style="background-color: #fdcfe8;"></div>
                         </div>
-                        <div class="color-option" data-color="#f28b82" style="background-color: #f28b82;"></div>
-                        <!-- Red -->
-                        <div class="color-option" data-color="#fbbc04" style="background-color: #fbbc04;"></div>
-                        <!-- Orange -->
-                        <div class="color-option" data-color="#fff475" style="background-color: #fff475;"></div>
-                        <!-- Yellow -->
-                        <div class="color-option" data-color="#ccff90" style="background-color: #ccff90;"></div>
-                        <!-- Green -->
-                        <div class="color-option" data-color="#a7ffeb" style="background-color: #a7ffeb;"></div>
-                        <!-- Teal -->
-                        <div class="color-option" data-color="#cbf0f8" style="background-color: #cbf0f8;"></div>
-                        <!-- Blue -->
-                        <div class="color-option" data-color="#aecbfa" style="background-color: #aecbfa;"></div>
-                        <!-- Dark Blue -->
-                        <div class="color-option" data-color="#d7aefb" style="background-color: #d7aefb;"></div>
-                        <!-- Purple -->
-                        <div class="color-option" data-color="#fdcfe8" style="background-color: #fdcfe8;"></div>
-                        <!-- Pink -->
+                        <button type="submit" class="btn btn-small">Add</button>
                     </div>
-                    <button type="submit" class="btn btn-small">Add</button>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
 
-        <!-- Notes Grid -->
-        <div id="notes-grid" class="notes-grid">
-            <!-- Notes will be injected here -->
+            <h2 id="view-title" style="margin-bottom: 1.5rem; color: #5f6368; display: none;">Archive</h2>
+
+            <!-- Notes Grid -->
+            <div id="notes-grid" class="notes-grid">
+                <!-- Notes will be injected here -->
+            </div>
         </div>
     </div>
 
