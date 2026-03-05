@@ -190,6 +190,42 @@ body {
   color: var(--primary-color);
 }
 
+.sidebar-labels-header {
+  padding: 1.5rem 1.5rem 0.5rem 2rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #5f6368;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.sidebar-label-item {
+  padding: 0.6rem 1.5rem 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: #202124;
+  cursor: pointer;
+  border-radius: 0 25px 25px 0;
+  margin-right: 8px;
+}
+
+.sidebar-label-item i {
+  font-size: 1rem;
+  width: 24px;
+  text-align: center;
+  color: #5f6368;
+}
+
+.sidebar-label-item:hover {
+  background-color: #f1f3f4;
+}
+
+.sidebar-label-item.active {
+  background-color: #feefc3;
+}
+
 .main-content {
   flex: 1;
   padding: 2rem;
@@ -306,6 +342,38 @@ body {
   margin-bottom: 1rem;
   white-space: pre-wrap;
   /* Preserve line breaks */
+}
+
+.note-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 1rem;
+}
+
+.label-chip {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: #3c4043;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.label-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.85rem;
+  color: #5f6368;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.label-input:focus {
+  border-bottom-color: var(--gray-300);
 }
 
 .note-footer {
