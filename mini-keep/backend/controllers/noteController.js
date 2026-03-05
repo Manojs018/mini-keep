@@ -7,16 +7,21 @@ let localNotes = [];
 // @route   GET /api/notes
 // @access  Private
 const getNotes = async (req, res) => {
-    const { view } = req.query; // 'notes', 'archive', 'trash'
+    const { view, label } = req.query; // 'notes', 'archive', 'trash', and label filter
 
     let filter = { user: req.user.id };
+
+    if (label) {
+        filter.labels = label;
+    }
+
     if (view === 'archive') {
         filter.isArchived = true;
         filter.isTrashed = false;
     } else if (view === 'trash') {
         filter.isTrashed = true;
     } else {
-        // Main view: active notes
+        // Main view or label view: hide archived and trashed unless explicitly in those views
         filter.isArchived = false;
         filter.isTrashed = false;
     }
@@ -24,6 +29,10 @@ const getNotes = async (req, res) => {
     if (!global.dbConnected) {
         const userId = req.user.id || req.user._id;
         let notes = localNotes.filter(n => (n.user === userId));
+
+        if (label) {
+            notes = notes.filter(n => n.labels && n.labels.includes(label));
+        }
 
         if (view === 'archive') {
             notes = notes.filter(n => n.isArchived && !n.isTrashed);
@@ -45,7 +54,7 @@ const getNotes = async (req, res) => {
 // @route   POST /api/notes
 // @access  Private
 const createNote = async (req, res) => {
-    const { title, description, color, pinned } = req.body;
+    const { title, description, color, pinned, labels } = req.body;
 
     if (!title && !description) {
         return res.status(400).json({ message: 'Please add a title or description' });
@@ -60,6 +69,7 @@ const createNote = async (req, res) => {
             pinned: pinned || false,
             isArchived: false,
             isTrashed: false,
+            labels: labels || [],
             user: req.user.id || req.user._id, // Handle mock ID format
             createdAt: new Date().toISOString()
         };
@@ -72,6 +82,7 @@ const createNote = async (req, res) => {
         description,
         color,
         pinned,
+        labels,
         user: req.user.id,
     });
 
@@ -235,6 +246,23 @@ const trashNote = async (req, res) => {
     res.status(200).json(note);
 };
 
+// @desc    Get all unique labels for a user
+// @route   GET /api/notes/labels
+// @access  Private
+const getLabels = async (req, res) => {
+    if (!global.dbConnected) {
+        const userId = req.user.id || req.user._id;
+        const labels = [...new Set(localNotes
+            .filter(n => n.user === userId)
+            .flatMap(n => n.labels || [])
+        )];
+        return res.status(200).json(labels);
+    }
+
+    const labels = await Note.find({ user: req.user.id }).distinct('labels');
+    res.status(200).json(labels);
+};
+
 module.exports = {
     getNotes,
     createNote,
@@ -242,5 +270,6 @@ module.exports = {
     deleteNote,
     pinNote,
     archiveNote,
-    trashNote
+    trashNote,
+    getLabels
 };
