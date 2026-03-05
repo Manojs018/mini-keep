@@ -7,11 +7,13 @@ const {
     deleteNote,
     pinNote,
     archiveNote,
-    trashNote
+    trashNote,
+    getLabels
 } = require('../controllers/noteController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.route('/').get(protect, getNotes).post(protect, createNote);
+router.route('/labels').get(protect, getLabels);
 router.route('/:id').put(protect, updateNote).delete(protect, deleteNote);
 router.route('/pin/:id').put(protect, pinNote);
 router.route('/archive/:id').put(protect, archiveNote);
