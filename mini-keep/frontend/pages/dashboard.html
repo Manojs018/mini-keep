@@ -34,6 +34,12 @@
             <div class="sidebar-item" data-view="trash">
                 <i class="fas fa-trash-alt"></i> Trash
             </div>
+            <div id="sidebar-labels">
+                <div class="sidebar-labels-header">Labels</div>
+                <div id="labels-list">
+                    <!-- Dynamic labels will be here -->
+                </div>
+            </div>
         </aside>
 
         <div class="main-content">
@@ -42,6 +48,8 @@
                 <form id="add-note-form" class="add-note-form">
                     <input type="text" id="note-title" placeholder="Title">
                     <textarea id="note-desc" rows="3" placeholder="Take a note..."></textarea>
+                    <input type="text" id="note-labels" class="label-input"
+                        placeholder="Add labels (comma separated)...">
 
                     <div class="form-actions">
                         <div class="color-picker" id="color-picker">
@@ -83,6 +91,9 @@
                 </div>
                 <div class="form-group">
                     <textarea id="edit-desc" rows="5" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="edit-labels" class="label-input" placeholder="Labels (comma separated)...">
                 </div>
                 <div class="form-group">
                     <label>Change Background Color:</label>
