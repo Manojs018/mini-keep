@@ -4,6 +4,7 @@ let notes = [];
 let selectedColor = '#ffffff';
 let editSelectedColor = '#ffffff';
 let currentView = 'notes';
+let selectedLabel = null;
 
 // Auth Header
 const authHeader = {
@@ -21,6 +22,7 @@ const searchInput = document.getElementById('search-input');
 const colorOptions = document.querySelectorAll('.color-option:not(.edit-color-option)');
 const editColorOptions = document.querySelectorAll('.edit-color-option');
 const sidebarItems = document.querySelectorAll('.sidebar-item');
+const labelsList = document.getElementById('labels-list');
 const viewTitle = document.getElementById('view-title');
 const addNoteContainer = document.querySelector('.add-note-container');
 
@@ -50,6 +52,7 @@ sidebarItems.forEach(item => {
         sidebarItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
         currentView = item.dataset.view;
+        selectedLabel = null; // Reset label filter when clicking main views
 
         // Update UI based on view
         if (currentView === 'notes') {
@@ -65,14 +68,56 @@ sidebarItems.forEach(item => {
     });
 });
 
+// Load Labels for Sidebar
+async function fetchLabels() {
+    try {
+        const res = await fetch(`${API_URL}/notes/labels`, authHeader);
+        const data = await res.json();
+        if (res.ok) {
+            renderLabelsSidebar(data);
+        }
+    } catch (error) {
+        console.error('Error fetching labels:', error);
+    }
+}
+
+function renderLabelsSidebar(labels) {
+    labelsList.innerHTML = '';
+    labels.forEach(label => {
+        const labelEl = document.createElement('div');
+        labelEl.classList.add('sidebar-label-item');
+        if (selectedLabel === label) labelEl.classList.add('active');
+        labelEl.innerHTML = `<i class="fas fa-tag"></i> ${escapeHTML(label)}`;
+        labelEl.onclick = () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.sidebar-label-item').forEach(i => i.classList.remove('active'));
+            labelEl.classList.add('active');
+
+            selectedLabel = label;
+            currentView = 'notes'; // Labels are viewed in "Notes" context
+
+            viewTitle.innerText = label;
+            viewTitle.style.display = 'block';
+            addNoteContainer.style.display = 'none';
+
+            fetchNotes();
+        };
+        labelsList.appendChild(labelEl);
+    });
+}
+
 // Load Notes
 async function fetchNotes() {
     try {
-        const res = await fetch(`${API_URL}/notes?view=${currentView}`, authHeader);
+        let url = `${API_URL}/notes?view=${currentView}`;
+        if (selectedLabel) url += `&label=${encodeURIComponent(selectedLabel)}`;
+
+        const res = await fetch(url, authHeader);
         const data = await res.json();
         if (res.ok) {
             notes = data;
             renderNotes(notes);
+            fetchLabels(); // Refresh labels in sidebar as well
         } else {
             if (res.status === 401) logout();
         }
@@ -137,6 +182,12 @@ function renderNotes(notesToRender) {
         noteEl.innerHTML = `
       <div class="note-title">${escapeHTML(note.title)}</div>
       <p>${escapeHTML(note.description)}</p>
+      
+      ${note.labels && note.labels.length > 0 ? `
+      <div class="note-labels">
+          ${note.labels.map(label => `<span class="label-chip">${escapeHTML(label)}</span>`).join('')}
+      </div>` : ''}
+
       <div class="note-footer">
           <span>${date}</span>
           <div class="note-actions">
@@ -157,6 +208,8 @@ addNoteForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = document.getElementById('note-title').value;
     const description = document.getElementById('note-desc').value;
+    const labelsRaw = document.getElementById('note-labels').value;
+    const labels = labelsRaw ? labelsRaw.split(',').map(l => l.trim()).filter(l => l !== '') : [];
 
     if (!title && !description) {
         alert('Please add a title or note');
@@ -167,13 +220,14 @@ addNoteForm.addEventListener('submit', async (e) => {
         const res = await fetch(`${API_URL}/notes`, {
             method: 'POST',
             ...authHeader,
-            body: JSON.stringify({ title, description, color: selectedColor }),
+            body: JSON.stringify({ title, description, color: selectedColor, labels }),
         });
 
         if (res.ok) {
             // Reset form
             document.getElementById('note-title').value = '';
             document.getElementById('note-desc').value = '';
+            document.getElementById('note-labels').value = '';
             selectedColor = '#ffffff';
             document.querySelector('.add-note-container').style.backgroundColor = '#ffffff';
             colorOptions.forEach(opt => opt.classList.remove('selected'));
@@ -255,6 +309,7 @@ window.openEditModal = (id) => {
         document.getElementById('edit-id').value = note._id;
         document.getElementById('edit-title').value = note.title;
         document.getElementById('edit-desc').value = note.description;
+        document.getElementById('edit-labels').value = note.labels ? note.labels.join(', ') : '';
         editSelectedColor = note.color || '#ffffff';
 
         // Select the color in modal
@@ -286,12 +341,14 @@ editForm.addEventListener('submit', async (e) => {
     const id = document.getElementById('edit-id').value;
     const title = document.getElementById('edit-title').value;
     const description = document.getElementById('edit-desc').value;
+    const labelsRaw = document.getElementById('edit-labels').value;
+    const labels = labelsRaw ? labelsRaw.split(',').map(l => l.trim()).filter(l => l !== '') : [];
 
     try {
         const res = await fetch(`${API_URL}/notes/${id}`, {
             method: 'PUT',
             ...authHeader,
-            body: JSON.stringify({ title, description, color: editSelectedColor })
+            body: JSON.stringify({ title, description, color: editSelectedColor, labels })
         });
 
         if (res.ok) {
