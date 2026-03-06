@@ -6,6 +6,14 @@ let editSelectedColor = '#ffffff';
 let currentView = 'notes';
 let selectedLabel = null;
 
+// Set marked options
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,
+        gfm: true
+    });
+}
+
 // Auth Header
 const authHeader = {
     headers: {
@@ -140,9 +148,27 @@ function escapeHTML(str) {
     });
 }
 
+// Helper for Markdown rendering with sanitization
+function parseMarkdown(text) {
+    if (!text) return "";
+    try {
+        // Using marked.parse for newer versions of marked
+        const rawHtml = marked.parse(text);
+        return DOMPurify.sanitize(rawHtml);
+    } catch (e) {
+        console.error("Markdown parse error:", e);
+        return escapeHTML(text);
+    }
+}
+
 // Render Notes
 function renderNotes(notesToRender) {
     notesGrid.innerHTML = '';
+
+    if (!Array.isArray(notesToRender)) {
+        console.error("renderNotes expected an array but received:", notesToRender);
+        return;
+    }
 
     if (notesToRender.length === 0) {
         let emptyMsg = "No notes found. Add one!";
@@ -181,7 +207,7 @@ function renderNotes(notesToRender) {
 
         noteEl.innerHTML = `
       <div class="note-title">${escapeHTML(note.title)}</div>
-      <p>${escapeHTML(note.description)}</p>
+      <div class="note-description">${parseMarkdown(note.description)}</div>
       
       ${note.labels && note.labels.length > 0 ? `
       <div class="note-labels">
