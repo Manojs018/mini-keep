@@ -77,16 +77,19 @@ const createNote = async (req, res) => {
         return res.status(200).json(note);
     }
 
-    const note = await Note.create({
-        title,
-        description,
-        color,
-        pinned,
-        labels,
-        user: req.user.id,
-    });
-
-    res.status(200).json(note);
+    try {
+        const note = await Note.create({
+            title,
+            description,
+            color,
+            pinned,
+            labels,
+            user: req.user.id,
+        });
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 // @desc    Update a note
@@ -118,11 +121,15 @@ const updateNote = async (req, res) => {
         return res.status(401).json({ message: 'User not authorized' });
     }
 
-    const updatedNote = await Note.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-    });
+    try {
+        const updatedNote = await Note.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        });
 
-    res.status(200).json(updatedNote);
+        res.status(200).json(updatedNote);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 // @desc    Delete a note
@@ -184,10 +191,14 @@ const pinNote = async (req, res) => {
         return res.status(401).json({ message: 'User not authorized' });
     }
 
-    note.pinned = !note.pinned;
-    await note.save();
+    try {
+        note.pinned = !note.pinned;
+        await note.save();
 
-    res.status(200).json(note);
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 }
 
 // @desc    Toggle archive status
@@ -208,11 +219,15 @@ const archiveNote = async (req, res) => {
     if (!note) return res.status(404).json({ message: 'Note not found' });
     if (note.user.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
 
-    note.isArchived = !note.isArchived;
-    if (note.isArchived) note.pinned = false;
+    try {
+        note.isArchived = !note.isArchived;
+        if (note.isArchived) note.pinned = false;
 
-    await note.save();
-    res.status(200).json(note);
+        await note.save();
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 // @desc    Toggle trash status
@@ -236,14 +251,18 @@ const trashNote = async (req, res) => {
     if (!note) return res.status(404).json({ message: 'Note not found' });
     if (note.user.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
 
-    note.isTrashed = !note.isTrashed;
-    if (note.isTrashed) {
-        note.pinned = false;
-        note.isArchived = false;
-    }
+    try {
+        note.isTrashed = !note.isTrashed;
+        if (note.isTrashed) {
+            note.pinned = false;
+            note.isArchived = false;
+        }
 
-    await note.save();
-    res.status(200).json(note);
+        await note.save();
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
 // @desc    Get all unique labels for a user
