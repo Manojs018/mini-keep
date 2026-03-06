@@ -336,12 +336,58 @@ body {
   font-size: 1.1rem;
 }
 
-.note-card p {
-  font-size: 0.95rem;
+.note-description {
+  font-size: 0.93rem;
   color: #3c4043;
   margin-bottom: 1rem;
-  white-space: pre-wrap;
-  /* Preserve line breaks */
+  line-height: 1.5;
+}
+
+.note-description p {
+  margin-bottom: 0.5rem;
+}
+
+.note-description ul,
+.note-description ol {
+  margin-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.note-description li {
+  margin-bottom: 0.2rem;
+}
+
+.note-description a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.note-description a:hover {
+  text-decoration: underline;
+}
+
+.note-description code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.note-description pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+
+.note-description blockquote {
+  border-left: 3px solid #dadce0;
+  padding-left: 10px;
+  color: #5f6368;
+  font-style: italic;
+  margin: 0.5rem 0;
 }
 
 .note-labels {
