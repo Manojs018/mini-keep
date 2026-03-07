@@ -4,12 +4,19 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
 
 connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP for now to allow external CDNs (FontAwesome, marked)
+}));
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : '*',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
