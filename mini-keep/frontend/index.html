@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Mini Keep</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -27,8 +29,8 @@
     <script>
         // Simple inline script to handle path issues for auth.js
         // We will load auth.js which expects to find form elements
-        const API_URL = 'http://localhost:5000/api';
-        
+        const API_URL = '/api';
+
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -45,7 +47,7 @@
 
                 if (res.ok) {
                     localStorage.setItem('user', JSON.stringify(data));
-                    window.location.href = 'pages/dashboard.html'; 
+                    window.location.href = 'pages/dashboard.html';
                 } else {
                     alert(data.message);
                 }
@@ -54,10 +56,11 @@
                 alert('Login failed');
             }
         });
-        
-        if(localStorage.getItem('user')) {
-             window.location.href = 'pages/dashboard.html';
+
+        if (localStorage.getItem('user')) {
+            window.location.href = 'pages/dashboard.html';
         }
     </script>
 </body>
+
 </html>
