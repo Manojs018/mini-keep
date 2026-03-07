@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Mini Keep</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
     <div class="auth-container">
         <div class="auth-card">
@@ -29,7 +31,7 @@
         </div>
     </div>
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        const API_URL = '/api';
 
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -48,7 +50,7 @@
 
                 if (res.ok) {
                     localStorage.setItem('user', JSON.stringify(data));
-                    window.location.href = 'dashboard.html'; 
+                    window.location.href = 'dashboard.html';
                 } else {
                     alert(data.message);
                 }
@@ -59,4 +61,5 @@
         });
     </script>
 </body>
+
 </html>
