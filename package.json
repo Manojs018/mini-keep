@@ -2,10 +2,10 @@
   "name": "mini-keep-backend",
   "version": "1.0.0",
   "description": "Backend for Mini Keep Clone",
-  "main": "backend/server.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "npx nodemon backend/server.js"
+    "start": "node api/index.js",
+    "dev": "npx nodemon api/index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

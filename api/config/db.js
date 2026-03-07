@@ -12,8 +12,7 @@ const connectDB = async () => {
   } catch (error) {
     console.error(`Error: ${error.message}`);
     if (process.env.NODE_ENV === 'production') {
-      console.error('FATAL ERROR: Could not connect to MongoDB in production mode. Exiting...');
-      process.exit(1);
+      console.warn('⚠️ WARNING: Could not connect to MongoDB in production. Ensure MONGO_URI is set in Vercel settings.');
     }
     console.log('Running in No-Database Mode (In-Memory)');
     global.dbConnected = false;
