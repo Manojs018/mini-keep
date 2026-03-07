@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 const user = JSON.parse(localStorage.getItem('user'));
 let notes = [];
 let selectedColor = '#ffffff';
