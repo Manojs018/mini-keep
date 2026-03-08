@@ -17,8 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api', require('./routes/authRoutes'));
-app.use('/api/notes', require('./routes/noteRoutes'));
+app.use('/', require('./routes/authRoutes'));
+app.use('/notes', require('./routes/noteRoutes'));
 
 if (process.env.NODE_ENV !== 'production') {
     app.use(express.static(path.join(__dirname, '../public')));
