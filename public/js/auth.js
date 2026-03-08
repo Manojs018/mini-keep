@@ -54,7 +54,7 @@ if (loginForm) {
 
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
-                window.location.href = '../frontend/pages/dashboard.html'; // Assuming login is at root
+                window.location.href = 'pages/dashboard.html';
             } else {
                 alert(data.message);
             }
