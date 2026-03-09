@@ -136,11 +136,11 @@ The application will be available at `http://localhost:5000`.
 
 ---
 
-## 👨‍💻 Author
+## 👨💻 Author
 
 **Manoj S**
-- GitHub: [@your-username](https://github.com/your-username)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- GitHub: [@your-username](https://github.com/Manojs018)
+- 
 
 ---
 
