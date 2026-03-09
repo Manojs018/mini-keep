@@ -17,15 +17,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', require('./routes/authRoutes'));
-app.use('/notes', require('./routes/noteRoutes'));
+app.use('/api', require('./routes/authRoutes'));
+app.use('/api/notes', require('./routes/noteRoutes'));
 
-if (process.env.NODE_ENV !== 'production') {
-    app.use(express.static(path.join(__dirname, '../public')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
-    });
-}
+// Serve static files in all environments if needed, or rely on Vercel for production
+// For local development, this is necessary.
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Fallback for SPA if needed
+app.get('*', (req, res) => {
+    // If it's an API call that wasn't caught, return 404
+    if (req.url.startsWith('/api')) {
+        return res.status(404).json({ message: 'API Route not found' });
+    }
+    res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
+});
 
 app.use(errorHandler);
 
