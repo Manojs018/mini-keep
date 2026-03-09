@@ -15,8 +15,12 @@ const registerUser = async (req, res) => {
         return res.status(400).json({ message: 'Please add all fields' });
     }
 
-    // --- No-DB Mode ---
+    // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(500).json({ message: 'Database connection failed. Please check MONGO_URI.' });
+        }
+
         const userExists = users.find(u => u.email === email);
         if (userExists) return res.status(400).json({ message: 'User already exists' });
 
@@ -76,8 +80,12 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
-    // --- No-DB Mode ---
+    // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(500).json({ message: 'Database connection failed. Please check MONGO_URI.' });
+        }
+
         const user = users.find(u => u.email === email);
         if (user && (await bcrypt.compare(password, user.password))) {
             return res.json({
