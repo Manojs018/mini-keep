@@ -27,6 +27,10 @@ const getNotes = async (req, res) => {
     }
 
     if (!global.dbConnected) {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(500).json({ message: 'Database connection failed' });
+        }
+
         const userId = req.user.id || req.user._id;
         let notes = localNotes.filter(n => (n.user === userId));
 
@@ -61,6 +65,10 @@ const createNote = async (req, res) => {
     }
 
     if (!global.dbConnected) {
+        if (process.env.NODE_ENV === 'production') {
+            return res.status(500).json({ message: 'Database connection failed' });
+        }
+
         const note = {
             _id: Date.now().toString(),
             title,
