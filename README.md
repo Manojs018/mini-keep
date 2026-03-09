@@ -139,9 +139,7 @@ The application will be available at `http://localhost:5000`.
 ## 👨💻 Author
 
 **Manoj S**
-- GitHub: [@your-username](https://github.com/Manojs018)
-- 
-
+- GitHub: [@ManojS018](https://github.com/Manojs018)
 ---
 
 ## 📄 License
