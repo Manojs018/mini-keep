@@ -19,6 +19,9 @@ const protect = async (req, res, next) => {
             if (global.dbConnected) {
                 req.user = await User.findById(decoded.id).select('-password');
             } else {
+                if (process.env.NODE_ENV === 'production') {
+                    return res.status(500).json({ message: 'Database connection failed' });
+                }
                 // Mock user object for in-memory mode
                 req.user = { id: decoded.id, _id: decoded.id };
             }
