@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected && mongoose.connection.readyState === 1) {
+    return;
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/mini-keep', {
       useNewUrlParser: true,
@@ -9,6 +15,7 @@ const connectDB = async () => {
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     global.dbConnected = true;
+    isConnected = true;
   } catch (error) {
     console.error(`Error: ${error.message}`);
     if (process.env.NODE_ENV === 'production') {
@@ -16,8 +23,9 @@ const connectDB = async () => {
     }
     console.log('Running in No-Database Mode (In-Memory)');
     global.dbConnected = false;
-    // process.exit(1); // Don't exit, fall back to memory
+    isConnected = false;
   }
 };
 
 module.exports = connectDB;
+
