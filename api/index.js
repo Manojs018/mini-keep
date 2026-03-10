@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
 
-connectDB();
+const dbMiddleware = require('./middleware/dbMiddleware');
 
 const app = express();
 
@@ -17,8 +17,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Apply database middleware to all API routes
+app.use('/api', dbMiddleware);
+
 app.use('/api', require('./routes/authRoutes'));
 app.use('/api/notes', require('./routes/noteRoutes'));
+
 
 // Serve static files in all environments if needed, or rely on Vercel for production
 // For local development, this is necessary.
