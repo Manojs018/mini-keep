@@ -9,26 +9,38 @@ if (registerForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Registering...';
+
         try {
             const res = await fetch(`${API_URL}/register`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (parseError) {
+                console.error('Error parsing JSON:', parseError);
+                data = { message: 'An unexpected error occurred' };
+            }
 
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
-                window.location.href = 'dashboard.html';
+                window.location.href = 'pages/dashboard.html';
             } else {
-                alert(data.message);
+                alert(data.message || 'Registration failed');
             }
         } catch (error) {
             console.error(error);
-            alert('An error occurred');
+            alert('Connection error. Please check your internet or try again later.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
         }
     });
 }
@@ -41,29 +53,42 @@ if (loginForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Logging in...';
+
         try {
             const res = await fetch(`${API_URL}/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (parseError) {
+                console.error('Error parsing JSON:', parseError);
+                data = { message: 'An unexpected error occurred' };
+            }
 
             if (res.ok) {
                 localStorage.setItem('user', JSON.stringify(data));
                 window.location.href = 'pages/dashboard.html';
             } else {
-                alert(data.message);
+                alert(data.message || 'Login failed');
             }
         } catch (error) {
             console.error(error);
-            alert('An error occurred');
+            alert('Connection error. Please check your internet or try again later.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
         }
     });
 }
+
 
 // Check if already logged in (simple check)
 const user = JSON.parse(localStorage.getItem('user'));
