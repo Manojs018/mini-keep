@@ -18,8 +18,12 @@ const registerUser = async (req, res) => {
     // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
         if (process.env.NODE_ENV === 'production') {
-            return res.status(500).json({ message: 'Database connection failed. Please check MONGO_URI.' });
+            const errorMsg = process.env.MONGO_URI
+                ? 'Database connection failed. Please check your MongoDB Atlas whitelist and URI.'
+                : 'Database connection failed. MONGO_URI is missing in Environment Variables.';
+            return res.status(500).json({ message: errorMsg });
         }
+
 
         const userExists = users.find(u => u.email === email);
         if (userExists) return res.status(400).json({ message: 'User already exists' });
@@ -83,8 +87,12 @@ const loginUser = async (req, res) => {
     // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
         if (process.env.NODE_ENV === 'production') {
-            return res.status(500).json({ message: 'Database connection failed. Please check MONGO_URI.' });
+            const errorMsg = process.env.MONGO_URI
+                ? 'Database connection failed. Please check your MongoDB Atlas whitelist and URI.'
+                : 'Database connection failed. MONGO_URI is missing in Environment Variables.';
+            return res.status(500).json({ message: errorMsg });
         }
+
 
         const user = users.find(u => u.email === email);
         if (user && (await bcrypt.compare(password, user.password))) {
