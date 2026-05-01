@@ -5,6 +5,13 @@ const User = require('../models/User');
 // In-Memory Storage
 const users = [];
 
+const getDbErrorMessage = () => {
+    if (!process.env.MONGO_URI) {
+        return 'Database connection failed. MONGO_URI is missing in environment variables.';
+    }
+    return 'Database connection failed. Check MongoDB URI and network access for the deployed server.';
+};
+
 // @desc    Register new user
 // @route   POST /api/register
 // @access  Public
@@ -18,10 +25,7 @@ const registerUser = async (req, res) => {
     // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
         if (process.env.NODE_ENV === 'production') {
-            const errorMsg = process.env.MONGO_URI
-                ? 'Database connection failed. Please check your MongoDB Atlas whitelist and URI.'
-                : 'Database connection failed. MONGO_URI is missing in Environment Variables.';
-            return res.status(500).json({ message: errorMsg });
+            return res.status(500).json({ message: getDbErrorMessage() });
         }
 
 
@@ -87,10 +91,7 @@ const loginUser = async (req, res) => {
     // --- No-DB Mode (Local only) ---
     if (!global.dbConnected) {
         if (process.env.NODE_ENV === 'production') {
-            const errorMsg = process.env.MONGO_URI
-                ? 'Database connection failed. Please check your MongoDB Atlas whitelist and URI.'
-                : 'Database connection failed. MONGO_URI is missing in Environment Variables.';
-            return res.status(500).json({ message: errorMsg });
+            return res.status(500).json({ message: getDbErrorMessage() });
         }
 
 
@@ -125,6 +126,10 @@ const loginUser = async (req, res) => {
 
 // Generate JWT
 const generateToken = (id) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is missing in environment variables.');
+    }
+
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });

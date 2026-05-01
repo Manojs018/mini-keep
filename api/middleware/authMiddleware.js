@@ -12,6 +12,10 @@ const protect = async (req, res, next) => {
             // Get token from header
             token = req.headers.authorization.split(' ')[1];
 
+            if (!process.env.JWT_SECRET) {
+                return res.status(500).json({ message: 'JWT_SECRET is missing in environment variables.' });
+            }
+
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

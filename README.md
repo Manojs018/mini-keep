@@ -105,6 +105,31 @@ The application will be available at `http://localhost:5000`.
 
 ---
 
+## Vercel Production Checklist
+
+Set these environment variables in Vercel Project Settings:
+
+```env
+NODE_ENV=production
+MONGO_URI=your_mongodb_atlas_uri
+JWT_SECRET=a_long_random_secret
+FRONTEND_URL=https://mini-keep.vercel.app
+```
+
+Also ensure your MongoDB Atlas Network Access allows the deployed backend (for Atlas, commonly `0.0.0.0/0` during setup or a stricter allow-list you manage).
+
+After deployment, verify backend health:
+
+- `GET /api/health`
+- Expected response includes:
+  - `dbConnected: true`
+  - `env.hasMongoUri: true`
+  - `env.hasJwtSecret: true`
+
+If register/login fails in production, inspect browser Network tab for `/api/register` and `/api/login` responses and check Vercel function logs.
+
+---
+
 ## 📖 Usage
 
 1. **Register/Login**: Create a new account or sign in with existing credentials.

@@ -10,15 +10,43 @@ const dbMiddleware = require('./middleware/dbMiddleware');
 
 const app = express();
 
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://mini-keep.vercel.app',
+    'http://localhost:5000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5000',
+    'http://127.0.0.1:5173',
+].filter(Boolean);
+
 app.use(helmet({
     contentSecurityPolicy: false, // Disable CSP for now to allow external CDNs (FontAwesome, marked)
 }));
-app.use(cors());
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Apply database middleware to all API routes
 app.use('/api', dbMiddleware);
+
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        dbConnected: !!global.dbConnected,
+        env: {
+            hasMongoUri: !!process.env.MONGO_URI,
+            hasJwtSecret: !!process.env.JWT_SECRET,
+        },
+    });
+});
 
 app.use('/api', require('./routes/authRoutes'));
 app.use('/api/notes', require('./routes/noteRoutes'));
