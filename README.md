@@ -161,6 +161,10 @@ If register/login fails in production, inspect browser Network tab for `/api/reg
 
 ---
 
+
+---
+
+
 ## 👨💻 Author
 
 **Manoj S**
